@@ -1,0 +1,78 @@
+<ion-content>
+  <div class="contenedor-principal">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="1" size-md="3"></ion-col>
+        <ion-col size="10" size-md="6">
+          <ion-img class="image-response" src="assets/img/logo-banco-agrario-colombia.png"></ion-img>
+        </ion-col>
+        <ion-col size="3"></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="1" size-md="3"></ion-col>
+        <ion-col size="10" size-md="6" class="ion-align-self-center">
+          <div class="fondo-azul">
+            <form [formGroup]="loginFormGroup" (ngSubmit)="OnSubmit()" autocomplete="off">
+              <ion-row style="margin-top: 3%; margin-bottom: 3%;">
+                <ion-col size="12" size-sm="12" size-md="12" size-lg="12" class="ion-text-center">
+                  <ion-title style="text-transform: uppercase;">
+                    <strong>
+                      {{'mobile.generics.Ingreso'| translate}}
+                    </strong>
+                  </ion-title>
+                </ion-col>
+              </ion-row>
+              <!-- User -->
+              <div class="group">
+                <ion-label position="stacked" color="danger"
+                  *ngIf="loginFormGroup.controls['userName'].errors?.required">
+                  {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                <ion-label position="floating" class="ion-text-center">
+                  {{'mobile.generics.LoginUser' | translate }}
+                </ion-label>
+                <ion-input formControlName="userName" type="text" maxlength="12"
+                (ionChange)="expresionRegular()">
+                  
+                </ion-input>
+              </div>
+              <!-- Password -->
+              <div class="group">
+                <ion-label position="stacked" color="danger"
+                  *ngIf="loginFormGroup.controls['userPassword'].errors?.required">
+                  {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                <ion-label position="floating" class="ion-text-center">
+                  {{'mobile.generics.LoginPassword' | translate }}
+                </ion-label>
+                <ion-input formControlName="userPassword" type="password" minlength="5" maxlength="16"
+                  (ionChange)="format()" >
+                </ion-input>
+                <ion-label position="stacked" color="danger"
+                  *ngIf="loginFormGroup.controls['userPassword'].errors?.pattern &&
+                  loginFormGroup.controls['userPassword'].value?.length > 0">
+                  {{'mobile.generics.LoginMessageInvalidFormat' | translate }}</ion-label>
+              </div>
+              <ion-row class="espacio-blanco"></ion-row>
+              <div class="center-text">
+                <ion-label position="stacked" color="danger" *ngIf="loginFormGroup.controls['userName'].errors?.required || 
+              loginFormGroup.controls['userPassword'].errors?.required">
+                  {{'mobile.generics.MessageRequired' | translate }}</ion-label>
+              </div>
+              <ion-row class="espacio-blanco"></ion-row>
+              <div class="flex-container">
+                <div class="flex-item-left">
+                  <ion-button type="submit" color="mango" shape="round" size="default" class="botones"
+                    [disabled]="!loginFormGroup.valid">
+                    {{'mobile.generics.LoginButtonSubmit' | translate }}
+                  </ion-button>
+                </div>
+              </div>
+            </form>
+          </div>
+		  <div><img src="assets/img/logofooter.png" width="" height="" class="footer-image" alt="Banco Agrario"/></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+	
+  </div>
+  
+</ion-content>

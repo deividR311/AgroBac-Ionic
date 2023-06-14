@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{'mobile.generics.Aplication' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-card id="termConditions">
+    <ion-card-header>
+      <ion-card-subtitle >{{'mobile.generics.TermsConditions' | translate }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content style="text-align: justify;">
+      {{documentoTerminosCondiones}}
+    </ion-card-content>
+    <ion-item>
+      <ion-button fill="outline" slot="start" (click)="acceptTerms()" 
+      onkeypress="acceptTerms()">{{'mobile.generics.Aceptar' | translate }}</ion-button>
+      <ion-button fill="outline" slot="end" (click)="closeModalTermsConditions()"
+      onkeypress="closeModalTermsConditions()">
+        {{'mobile.generics.Close' | translate }}</ion-button>
+    </ion-item>
+  </ion-card>
+</ion-content>

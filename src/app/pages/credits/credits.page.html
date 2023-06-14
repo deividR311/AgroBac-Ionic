@@ -1,0 +1,147 @@
+<ion-content>
+  <div class="contenedor-principal">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="0" size-xs="0" size-sm="0" size-lg="1"></ion-col>
+        <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="10" class="ion-align-self-center">
+          <div class="fondo-azul">
+            <ion-row style="margin-top: 3%; margin-bottom: 1%;">
+              <ion-col size="12" size-sm="12" size-md="12" size-lg="12" class="ion-text-center">
+                <ion-title style="text-transform: uppercase;">
+                  <strong>
+                    {{'mobile.generics.Credits'| translate}}
+                  </strong>
+                </ion-title>
+              </ion-col>
+            </ion-row>
+            <!-- search Obligaciones -->
+            <form [formGroup]="searchObligaciones" autocomplete="off">
+              <ion-grid>
+                <ion-row style="margin-top: 1%;">
+                  <ion-col size="12" size-sm="12" size-md="12" size-lg="6">
+                    <ion-item lines="inset" style="min-width: 100%;">
+                      <ion-label position="stacked" class="ion-text-wrap">
+                        <strong>{{'mobile.generics.documentType' | translate }}</strong>
+                      </ion-label>
+                      <ion-select formControlName="TipoIdentificacion"
+                        placeholder="{{'mobile.generics.toSelect' | translate}}"
+                        (ionChange)="updateTipoIdentificacion()">
+                        <ion-select-option *ngFor="let identificacion of tiposDocumento"
+                          value={{identificacion.valor}}>
+                          {{identificacion.descripcion}}
+                        </ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </ion-col>
+                  <!-- Document number -->
+                  <ion-col size="12" size-sm="12" size-md="12" size-lg="6">
+                    <ion-item lines="inset" style="min-width: 100%;">
+                      <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.documentNumber' | translate }}</strong>
+                      </ion-label>
+                      <ion-input formControlName="NumeroIdentificacion" type="text" maxlength="12"
+                      (ionChange)="expresionRegular()">
+                      </ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                
+                <ion-row>
+                </ion-row>
+                <ion-row style="margin-top: 1%;">
+                  <ion-col size="12" size-sm="12" size-md="12" size-lg="12">
+                    <ion-label position="stacked" color="danger" *ngIf="!searchObligaciones.valid && searchObligaciones.dirty">
+                      {{'mobile.generics.warningMessageFields' | translate }}</ion-label>
+                  </ion-col>
+                </ion-row>
+                
+                <ion-row class="ion-text-right">
+                  <ion-col size="6" size-sm="6" size-md="6" size-lg="6" class="ion-text-right">
+                    <ion-button (click)="clean()" onkeypress="clean()"
+                      [disabled]="
+                        (searchObligaciones.value.NumeroIdentificacion == '' && searchObligaciones.value.TipoIdentificacion == '') ||
+                        (searchObligaciones.value.NumeroIdentificacion == null && searchObligaciones.value.TipoIdentificacion == null)
+                      "
+                      color="mango" shape="round" size="default"
+                      class="botones" *ngIf="resourceService.GetPersistenceValue('rolUsuarioPC')">
+                      {{'mobile.generics.clean' | translate }}
+                    </ion-button>
+                  </ion-col>
+                  <ion-col size="6" size-sm="6" size-md="6" size-lg="6" class="ion-text-right">
+                    <ion-button (click)="search()" onkeypress="search()" [disabled]="!searchObligaciones.valid"
+                      color="mango" shape="round" size="default"
+                      class="botones">
+                      {{'mobile.generics.search' | translate }}
+                    </ion-button>
+                  </ion-col>
+                  
+                </ion-row>
+              </ion-grid>
+            </form>
+            <ion-row style="margin-top: 3%;">
+              <ion-col size="12" size-sm="12" size-md="12" size-lg="12">
+                <ion-label position="stacked" color="danger" *ngIf="obligacionesRequiresInternet">
+                  {{'mobile.generics.obligationsWithoutInternet' | translate }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-refresher *ngIf="!isCreditSearch && !iscommercialUser" slot="fixed" (ionRefresh)="doRefreshCredits($event)">
+              <ion-refresher-content refreshingSpinner="bubbles"></ion-refresher-content>
+            </ion-refresher>
+            <!-- components -->
+            <ion-card *ngFor="let credit of (isCreditSearch && !iscommercialUser ? creditsUser : recordCredits) | filter: typeDocument: numbreDocument">
+              <ion-card-header (click)="CheckHeading(credit)" onKeyDown="CheckHeading(credit)">
+                <ion-card-title>
+                  <strong>{{'mobile.generics.NumeroObligacion' | translate}}</strong> {{credit.obligacion | numberMask: 4}}
+                </ion-card-title>
+                <ion-card-title>
+                  <strong>
+                    {{'mobile.generics.Outlaydate'| translate}}</strong>
+                  {{credit.fechaDesembolso | date:'dd/MM/yyyy'}}
+                </ion-card-title>
+                <ion-card-title>
+                  <strong>
+                    {{'mobile.generics.LimitManagementDate'| translate}}</strong>
+                  {{credit.fechaLimiteAutogestion | date:'dd/MM/yyyy'}}
+                </ion-card-title>
+                <ion-card-title>
+                  <strong>{{'mobile.generics.Heading'| translate}}</strong>
+                  {{credit.descripcionRubro}}
+                </ion-card-title>
+                <ion-card-title class="colorMensaje">
+                  {{credit.mensajeValidacionNotificacion}}
+                </ion-card-title>
+                <ion-card-title *ngIf="credit.state">
+                  <strong>{{'mobile.generics.state'| translate}}</strong>
+                  {{credit.state}}
+                </ion-card-title>                  
+              </ion-card-header>
+              <ion-card-title [id]="credit.obligacion" *ngIf="credit.state && !credit.obligationUpdate">
+                <ion-button (click)="updateObligationRejected(credit)" onKeyDown="updateObligationRejected(credit)" color="mango" shape="round" size="default" class="bottom">
+                {{'mobile.generics.Update' | translate}}
+                </ion-button>
+              </ion-card-title>
+              <ion-card-title *ngIf="credit.rubroCompleto && (!credit.state || credit.obligationUpdate)">
+                <ion-button (click)="SendNotification(credit.obligacion, credit.idCase)" 
+                onkeypress="SendNotification(credit.obligacion, credit.idCase)"
+                color="mango" shape="round" size="default" class="bottom">
+                {{'mobile.generics.Send' | translate}}
+                </ion-button>
+              </ion-card-title>
+              <ion-card-title>
+                {{mensajeSinConexion}}
+              </ion-card-title>
+            </ion-card>
+          </div>
+        </ion-col>
+        <ion-col size-md="0" size-xs="0" size-sm="0" size-lg="1"></ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll *ngIf="recordCredits && creditsUser &&
+    (!isCreditSearch && !iscommercialUser || isCreditSearch && iscommercialUser) && recordCredits.length > 0" threshold="100px" (ionInfinite)="loadCreditsPaged($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

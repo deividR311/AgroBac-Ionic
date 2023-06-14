@@ -1,0 +1,392 @@
+<ion-content>
+  <div class="contenedor-principal">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="0" size-xs="0" size-sm="0" size-lg="1"></ion-col>
+        <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="10" class="ion-align-self-center">
+          <div class="fondo-azul">
+            <ion-title>
+              <strong>
+                <ion-label text-wrap>
+                  {{heading.obligacion| numberMask: 4}} {{'/'}} {{heading.descripcionRubro}}
+                </ion-label>
+              </strong>
+            </ion-title>
+            <ion-row class="espacio-blanco group"></ion-row>
+            <form [formGroup]="infrastructureFormGroup" autocomplete="off" (ngSubmit)="OnSubmit()">
+              <!-- Land Name -->
+              <ion-row>
+                <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="12">
+                  <ion-item lines="inset" style="min-width: 100%;">
+                    <ion-label position="stacked" color="danger"
+                      *ngIf="infrastructureFormGroup.controls['landName']?.errors?.required">
+                      {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                    <ion-label position="stacked" class="ion-text-wrap">
+                      <strong>{{'mobile.generics.InfrastructureLandName' | translate }}</strong>
+                    </ion-label>
+                    <ion-input type="text" formControlName="landName" maxlength="50">
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="12" class="ion-text-center">
+                  <ion-label position="floating" color="danger" *ngIf="!validarfecha">
+                    <ion-icon name="alert-circle-outline" color="mango"></ion-icon>
+                    {{'mobile.generics.fechaejecucion' | translate }}
+                  </ion-label>
+                </ion-col>
+                <!-- Execution Init Date -->
+                <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                  <ion-item lines="inset" style="min-width: 100%;" (click)="pickerinit.open()"
+                    onkeypress="pickerinit.open()">
+                    <ion-label position="stacked" color="danger"
+                      *ngIf="infrastructureFormGroup.controls['executionInitDate']?.errors?.required">
+                      {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                    <mat-form-field style="width: 100%;" color="primary">
+                      <input formControlName="executionInitDate" matInput readonly [matDatepicker]="pickerinit"
+                        placeholder="{{'mobile.generics.ExecutionInitDate' | translate}}" [min]="minDate"
+                        [max]="maxDate" (dateChange)="DateChange($event, true)">
+                      <mat-datepicker-toggle matSuffix [for]="pickerinit"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerinit color="primary">
+                      </mat-datepicker>
+                    </mat-form-field>
+                  </ion-item>
+                </ion-col>
+                <!-- Execution End Date -->
+                <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                  <ion-item lines="inset" style="min-width: 100%;" (click)="pickerend.open()"
+                    onkeypress="pickerend.open()">
+                    <ion-label position="stacked" color="danger"
+                      *ngIf="infrastructureFormGroup.controls['executionEndDate']?.errors?.required">
+                      {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                    <mat-form-field style="width: 100%;" color="primary">
+                      <input formControlName="executionEndDate" matInput readonly [matDatepicker]="pickerend"
+                        placeholder="{{'mobile.generics.ExecutionEndDate' | translate}}" [min]="minDate"
+                        [max]="maxDate" (dateChange)="DateChange($event, false)">
+                      <mat-datepicker-toggle matSuffix [for]="pickerend"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerend></mat-datepicker>
+                    </mat-form-field>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <!-- Executed Costs -->
+                <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                  <ion-item lines="inset" style="min-width: 100%;">
+                    {{currency}}
+                    <ion-label position="stacked" color="danger"
+                      *ngIf="infrastructureFormGroup.controls['executedCost']?.errors?.required">
+                      {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                    <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                    *ngIf="!infrastructureFormGroup.controls['executedCost']?.errors?.required &&
+                     !infrastructureFormGroup.controls['executedCost']?.errors?.valid &&
+                      infrastructureFormGroup.controls['executedCost']?.errors?.max || executedCostMaxError">
+                      <strong>{{'mobile.generics.ExecutedCostMaxValueError' | translate }}
+                        {{executedCostMaxValue | currencyMask}}</strong>
+                    </ion-label>
+                    <ion-label position="stacked" class="ion-text-wrap">
+                      <strong>{{'mobile.generics.ExecutedCost' | translate }}</strong>
+                    </ion-label>
+                    <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                      *ngIf="executedCostValueError">
+                      <strong class="texto">{{'mobile.generics.DecimalExecutedCostValueError' | translate }}</strong>
+                    </ion-label>
+                    <ion-input type="text" formControlName="executedCost" (ionChange)="ExecutedCostChange()"
+                      (ionBlur)="ExecutedCostBlur()" (ionFocus)="ExecutedCostFocus()"
+                      placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}"
+                      [maxlength]="executedCostMaxLength"
+                      inputmode="numeric">
+                    </ion-input>
+                  </ion-item>
+                </ion-col>
+                <!-- Infrastructure Type -->
+                <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                  <ion-label position="stacked" color="danger"
+                    *ngIf="infrastructureFormGroup.controls['infrastructureType']?.errors?.required" class="required">
+                    {{ 'mobile.generics.inputRequired' | translate}}
+                  </ion-label>
+                  <ion-item lines="inset" style="min-width: 80%;">
+                    <ion-label position="stacked">
+                      <strong>{{'mobile.generics.InfrastructureType' | translate }}</strong>
+                    </ion-label>
+                    <ion-select formControlName="infrastructureType"
+                      placeholder="{{'mobile.generics.toSelect' | translate}}" (ionChange)="InfrastructureTypeChange()">
+                      <ion-select-option *ngFor="let type of infrastructureTypeList" value={{type.id}}>
+                        {{type.descripcion}}
+                      </ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <!-- Infrastructure Type Form -->
+              <ion-row class="espacio-blanco group"></ion-row>
+              <ion-row *ngIf="infrastructureFormGroup?.controls['infrastructureType']?.value !== ''">
+                <ion-row>
+                  <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6"
+                    *ngFor="let supportType of supportTypeList; let x = index">
+                    <ion-card>
+                      <ion-card-header>
+                        <ion-card-title>
+                          {{supportType.description}}
+                        </ion-card-title>
+                        <ion-card-subtitle>
+                          <media-handler (result)="HandleMedia($event, x)" [heading]="heading"
+                            [supportType]="supportType">
+                          </media-handler>
+                        </ion-card-subtitle>
+                        <ion-row>
+                          <ion-col size="12" size-sm="12" size-md="12" size-lg="12">
+                            <ion-label position="stacked" color="danger"
+                              *ngIf="supportTypeList[x].thumbnails.length < supportType.minPictures" text-wrap>
+                              {{'mobile.generics.minimumNumberPhotos' | translate }} {{supportType.minPictures}}
+                            </ion-label>
+                            <ion-label position="stacked" color="danger"
+                              *ngIf="supportTypeList[x].thumbnails.length > supportType.maxPictures" text-wrap>
+                              {{'mobile.generics.maximumNumberPhotos' | translate }}{{supportType.maxPictures}}
+                            </ion-label>
+                          </ion-col>
+                        </ion-row>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <ion-row>
+                          <ion-col size="6" *ngFor="let support of supportType?.thumbnails; let y = index" size-md="3"
+                            size-xs="3" size-sm="2" size-lg="2">
+                            <div *ngIf="support?.metadata?.id !== -1">
+                              <ion-thumbnail slot="start" class="block">
+                                <ion-icon name="close-circle" (click)="DeleteMedia(x,y)" onkeypress="DeleteMedia(x,y)"
+                                  class="deleteicon"></ion-icon>
+                                <ion-img [src]="support.src"></ion-img>
+                              </ion-thumbnail>
+                            </div>
+                          </ion-col>
+                        </ion-row>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+                <form [formGroup]="infrastructureTypeFormGroup" autocomplete="off" style="min-width: 100%">
+                  <!-- Compartments -->
+                  <ion-row *ngIf="infrastructureFormGroup?.controls['infrastructureType']?.value === '39'">
+                    <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="12">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['numberCompartments']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['numberCompartments']?.errors?.max">
+                          <strong>{{'mobile.generics.CompartmentsMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['numberCompartments']?.errors?.min">
+                          <strong>{{'mobile.generics.CompartmentsMinValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                          *ngIf="decimalComparmentValueError || 
+                          infrastructureTypeFormGroup.controls['numberCompartments']?.errors?.pattern">
+                          <strong class="texto">{{'mobile.generics.DecimalExecutedCostValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.InfrastructureCompartments' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="numberCompartments"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}"
+                          (ionBlur)="numberCompartmentsBlur()"
+                          (ionChange)="numberCompartmentsOnChange()"
+                          inputmode="numeric"
+                          pattern="\d*">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <!-- length -->
+                    <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['length']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger"
+                          *ngIf="!infrastructureTypeFormGroup.controls['length']?.errors?.required &&
+                          infrastructureTypeFormGroup.controls['length']?.errors?.max">
+                          <strong>{{'mobile.generics.SizesMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger"
+                          *ngIf="!infrastructureTypeFormGroup.controls['length']?.errors?.required && 
+                          decimalLengthError">
+                          <strong>{{'mobile.generics.SizesMinValueDecimalError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Length' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="length"
+                          (ionChange)="LengthOrWidthChange(); Calculation();" [disabled]="lengthOrWidth"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}" inputmode="numeric">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <!-- width -->
+                    <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['width']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['width']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['width']?.errors?.max">
+                          <strong>{{'mobile.generics.SizesMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['width']?.errors?.required &&
+                        decimalWidthError">
+                          <strong>{{'mobile.generics.SizesMinValueDecimalError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Width' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="width"
+                          (ionChange)="LengthOrWidthChange(); Calculation();" [disabled]="lengthOrWidth"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}" inputmode="numeric">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <!-- Circumference -->
+                    <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['circumference']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['circumference']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['circumference']?.errors?.max">
+                          <strong>{{'mobile.generics.SizesMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['circumference']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['circumference']?.errors?.min">
+                          <strong>{{'mobile.generics.SizesMinValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Circumference' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="circumference"
+                          (ionChange)="CircumferenceChange(); Calculation();" [disabled]="circumference"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}" inputmode="numeric">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <!-- Height -->
+                    <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6"
+                      *ngIf="infrastructureFormGroup?.controls['infrastructureType']?.value === '39'">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['height']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['height']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['height']?.errors?.max">
+                          <strong>{{ 'mobile.generics.HeightMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['height']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['height']?.errors?.min">
+                          <strong>{{'mobile.generics.SizesMinValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['height']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['height']?.errors?.pattern">
+                          <strong>{{'mobile.generics.DecimalExecutedCostValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Height' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="height" (ionChange)="Calculation();" pattern="\d*"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}" inputmode="numeric">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <!-- Deep -->
+                    <ion-col size-md="6" size-xs="12" size-sm="12" size-lg="6"
+                      *ngIf="infrastructureFormGroup?.controls['infrastructureType']?.value === '38'">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" color="danger"
+                          *ngIf="infrastructureTypeFormGroup.controls['deep']?.errors?.required">
+                          {{ 'mobile.generics.inputRequired' | translate}}</ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['deep']?.errors?.required &&
+                        infrastructureTypeFormGroup.controls['deep']?.errors?.max">
+                          <strong>{{'mobile.generics.SizesMaxValueError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap" color="danger" 
+                        *ngIf="!infrastructureTypeFormGroup.controls['deep']?.errors?.required &&
+                        decimalDeepError">
+                          <strong>{{'mobile.generics.SizesMinValueDecimalError' | translate }}</strong>
+                        </ion-label>
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Deep' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="deep" (ionChange)="deepOnChange(); Calculation();"
+                          placeholder="{{'mobile.generics.NumberPlaceHolder' | translate}}" inputmode="numeric">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <!-- Calculation -->
+                  <ion-row>
+                    <ion-col size-md="12" size-xs="12" size-sm="12" size-lg="12">
+                      <ion-item lines="inset" style="min-width: 100%;">
+                        <ion-label position="stacked" class="ion-text-wrap">
+                          <strong>{{'mobile.generics.Calculation' | translate }}</strong>
+                        </ion-label>
+                        <ion-input type="number" formControlName="calculation" [disabled]="true">
+                        </ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </form>
+              </ion-row>
+              <ion-row class="espacio-blanco group"
+                *ngIf="infrastructureFormGroup.controls['infrastructureType']?.value !== ''"></ion-row>
+              <ion-row *ngIf="infrastructureFormGroup.controls['landName']?.errors?.required ||
+              infrastructureFormGroup.controls['executionInitDate']?.errors?.required ||
+              infrastructureFormGroup.controls['executionEndDate']?.errors?.required || 
+              infrastructureFormGroup.controls['executedCost']?.errors?.required || 
+              infrastructureFormGroup.controls['infrastructureType']?.errors?.required || 
+              infrastructureFormGroup.controls['numberCompartments']?.errors?.required || 
+              infrastructureFormGroup.controls['length']?.errors?.required || 
+              infrastructureFormGroup.controls['width']?.errors?.required || 
+              infrastructureFormGroup.controls['circumference']?.errors?.required || 
+              infrastructureFormGroup.controls['height']?.errors?.required || 
+              infrastructureFormGroup.controls['deep']?.errors?.required">
+                <ion-col size-md=" 12" size-xs="12" size-sm="12" size-lg="12">
+                  <ion-text color="danger">
+                    {{'mobile.generics.MessageRequired' | translate }}
+                  </ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-md="2" size-xs="0" size-sm="0" size-lg="2"></ion-col>
+                <ion-col size-md="2" size-xs="0" size-sm="0" size-lg="2"></ion-col>
+                <ion-col size-md="2" size-xs="0" size-sm="0" size-lg="2"></ion-col>
+                <ion-col size-md="2" size-xs="0" size-sm="0" size-lg="2"></ion-col>
+                <ion-col size-md="2" size-xs="0" size-sm="0" size-lg="2"></ion-col>
+                <ion-col size-md="2" size-xs="12" size-sm="12" size-lg="2">
+                  <ion-button type="submit" color="mango" size="small" expand="block" [disabled]="!validarfecha || 
+                  !infrastructureFormGroup.valid || !cantidadMinGeneral || !!  (!infrastructureTypeFormGroup.valid && 
+                  infrastructureFormGroup?.controls['infrastructureType']?.value !== '') || executedCostMaxError
+                  || decimalComparmentValueError || executedCostValueError || decimalDeepError || 
+                  decimalLengthError || decimalWidthError">
+                    {{'mobile.generics.save' | translate }}
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </div>
+        </ion-col>
+        <ion-col size-md="0" size-xs="0" size-sm="0" size-lg="1"></ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

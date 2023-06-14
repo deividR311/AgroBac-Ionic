@@ -1,0 +1,197 @@
+# Enable CI builds, trigger a build whenever the master branch receive new modifications 
+trigger: ['SD4846297_REQ']
+pr: none # Disable PR builds entirely
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'run build'
+- bash: | # Installing cordova
+    sudo npm i -g cordova
+  displayName: 'npm i -g cordova@latest'
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'Code Quality'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'BancoAgrarioIG.ControlInversion.AppFuncionarios'
+    cliProjectName: 'BancoAgrarioIG.ControlInversion.AppFuncionarios'
+    cliSources: '.'
+    extraProperties: |
+      # Additional properties that will be passed to the scanner, 
+      # Put one key=value per line, example:
+      sonar.exclusions=**/*.bin,**/node_modules/**,node_modules/**,dist/**,www/**
+      sonar.test=src
+      sonar.test.inclusions=**/*.spec.ts
+      sonar.ts.tslintconfigpath=tslint.json
+      sonar.typescript.lcov.reportPaths=coverage/lcov.info
+      sonar.typescript.exclusions=**/node_modules/**,**/cordova-typings.d.ts,**/main.ts,**/environments/**,**/*routing.module.ts'
+      sonar.coverage.exclusions=**
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w/,-.]*"\,?'
+          Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
+
+- bash: | # Uninstall 32.0.0 Build tool
+    $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;32.0.0'
+  displayName: 'Uninstall 32.0.0 Build tool'
+
+- bash: | # Uninstall 31.0.0 Build tool
+    $ANDROID_SDK_ROOT/tools/bin/sdkmanager --uninstall 'build-tools;31.0.0'
+  displayName: 'Uninstall 31.0.0 Build tool'
+
+- bash: | # Build android App using cordova
+    npx ionic cordova build android --release
+  displayName: 'ionic cordova build android --release'
+
+# Needed to solve missing dependency problem, see the troubleshooting topic
+- bash: |
+    sudo apt-get install lib32z1
+  displayName: 'sudo apt-get install lib32z1'
+
+- task: SonarQubeAnalyze@4
+
+- task: SonarQubePublish@4
+  inputs:
+    pollingTimeoutSec: '300'
+
+# Signin the .apk file with the specified keystore
+- task: AndroidSigning@3
+  displayName: 'android signing'
+  inputs:
+    apkFiles: '**/outputs/apk/release/app*.apk'
+    apksignerKeystoreFile: 'apperos-funcionario.keystore'
+# This password is placed in Variables inside the pipeline and the option to keep the value secret is checked.
+    apksignerKeystorePassword: '$(password_keystore)'
+    apksignerKeystoreAlias: 'apperosfuncionario'
+    zipalign: false
+
+- task: CopyFiles@2 # Copies all .apk files to publish
+  displayName: 'copy **/outputs/apk/release/app*.apk to $(Build.BinariesDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**/outputs/apk/release/app*.apk'
+    CleanTargetFolder: true
+    TargetFolder: '$(Build.BinariesDirectory)'
+    flattenFolders: true
+
+
+- publish: '$(Build.BinariesDirectory)' # Publish artifact
+  artifact: 'android-app'
+  displayName: 'publish artifact'
+  
+  #compilacion ambiente pruebasbac
+  
+- bash: | # Build android App using cordova
+    npx ionic cordova build android --release -c=pruebasbac
+  displayName: 'ionic cordova build android --release -c=pruebasbac'
+
+# Needed to solve missing dependency problem, see the troubleshooting topic
+- bash: |
+    sudo apt-get install lib32z1
+  displayName: 'sudo apt-get install lib32z1'
+  
+  # Signin the .apk file with the specified keystore
+- task: AndroidSigning@3
+  displayName: 'android signing'
+  inputs:
+    apkFiles: '**/outputs/apk/release/app*.apk'
+    apksignerKeystoreFile: 'apperos-funcionario.keystore'
+# This password is placed in Variables inside the pipeline and the option to keep the value secret is checked.
+    apksignerKeystorePassword: '$(password_keystore)'
+    apksignerKeystoreAlias: 'apperosfuncionario'
+    zipalign: false
+
+- task: CopyFiles@2 # Copies all .apk files to publish
+  displayName: 'copy **/outputs/apk/release/app*.apk to $(Build.BinariesDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**/outputs/apk/release/app*.apk'
+    CleanTargetFolder: true
+    TargetFolder: '$(Build.BinariesDirectory)'
+    flattenFolders: true
+
+
+- publish: '$(Build.BinariesDirectory)' # Publish artifact
+  artifact: 'android-app-pruebasbac'
+  displayName: 'publish artifact'
+  
+    #compilacion ambiente pruebasig
+  
+- bash: | # Build android App using cordova
+    npx ionic cordova build android --release -c=pruebasig
+  displayName: 'ionic cordova build android --release -c=pruebasig'
+
+# Needed to solve missing dependency problem, see the troubleshooting topic
+- bash: |
+    sudo apt-get install lib32z1
+  displayName: 'sudo apt-get install lib32z1'
+  
+  # Signin the .apk file with the specified keystore
+- task: AndroidSigning@3
+  displayName: 'android signing'
+  inputs:
+    apkFiles: '**/outputs/apk/release/app*.apk'
+    apksignerKeystoreFile: 'apperos-funcionario.keystore'
+# This password is placed in Variables inside the pipeline and the option to keep the value secret is checked.
+    apksignerKeystorePassword: '$(password_keystore)'
+    apksignerKeystoreAlias: 'apperosfuncionario'
+    zipalign: false
+
+- task: CopyFiles@2 # Copies all .apk files to publish
+  displayName: 'copy **/outputs/apk/release/app*.apk to $(Build.BinariesDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**/outputs/apk/release/app*.apk'
+    CleanTargetFolder: true
+    TargetFolder: '$(Build.BinariesDirectory)'
+    flattenFolders: true
+
+- publish: '$(Build.BinariesDirectory)' # Publish artifact
+  artifact: 'android-app-pruebasig'
+  displayName: 'publish artifact'
+  
+  #compilacion ambiente producción
+  
+- bash: | # Build android App using cordova
+    npx ionic cordova build android --release -c=production
+  displayName: 'ionic cordova build android --release -c=production'
+
+# Needed to solve missing dependency problem, see the troubleshooting topic
+- bash: |
+    sudo apt-get install lib32z1
+  displayName: 'sudo apt-get install lib32z1'
+  
+  # Signin the .apk file with the specified keystore
+- task: AndroidSigning@3
+  displayName: 'android signing'
+  inputs:
+    apkFiles: '**/outputs/apk/release/app*.apk'
+    apksignerKeystoreFile: 'apperos-funcionario.keystore'
+# This password is placed in Variables inside the pipeline and the option to keep the value secret is checked.
+    apksignerKeystorePassword: '$(password_keystore)'
+    apksignerKeystoreAlias: 'apperosfuncionario'
+    zipalign: false
+
+- task: CopyFiles@2 # Copies all .apk files to publish
+  displayName: 'copy **/outputs/apk/release/app*.apk to $(Build.BinariesDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**/outputs/apk/release/app*.apk'
+    CleanTargetFolder: true
+    TargetFolder: '$(Build.BinariesDirectory)'
+    flattenFolders: true
+
+- publish: '$(Build.BinariesDirectory)' # Publish artifact
+  artifact: 'android-app-produccion'
+  displayName: 'publish artifact'

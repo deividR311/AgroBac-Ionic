@@ -1,0 +1,25 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h3><strong>Motivo rechazo</strong></h3> <br />
+        <p>{{ credit.justificacionRechazo }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><strong>Ajustes a soportes</strong></h3> <br />
+        <p>{{ credit.ajustesRechazo }}</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-footer no-border>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="mango" (click)="closeModal()" onkeypress="closeModal()">{{'mobile.generics.RejectionReasonOk' | translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

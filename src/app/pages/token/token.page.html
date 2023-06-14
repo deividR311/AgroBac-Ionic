@@ -1,0 +1,65 @@
+<ion-content>
+  <div class="contenedor-principal">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="1" size-md="3"></ion-col>
+        <ion-col size="10" size-md="6">
+          <ion-img class="image-response" src="assets/img/logo-banco-agrario-colombia.png"></ion-img>
+        </ion-col>
+        <ion-col size="3"></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="1" size-md="3"></ion-col>
+        <ion-col size="10" size-md="6" class="ion-align-self-center">
+          <div class="fondo-azul">
+            <form [formGroup]="registerFormulario">
+              <ion-grid>
+                <ion-row style="margin-top: 3%;">
+                  <ion-col size="12" size-sm="12" size-md="12" size-lg="12" class="ion-text-center">
+                    <ion-title style="text-transform: uppercase;">
+                        <strong>
+                          {{'mobile.generics.Token' | translate }}
+                      </strong>
+                    </ion-title>
+                  </ion-col>
+                </ion-row>
+
+                <!-- Campo token -->
+                <ion-row>
+                  <ion-col size="12" size-sm="12" size-md="12" size-lg="12">
+                    <ion-item lines="inset" style="min-width: 100%;">
+                      <ion-label position="stacked" class="ion-text-wrap">
+                        <strong>{{'mobile.generics.Token' | translate }}</strong>
+                      </ion-label>
+                      <ion-input formControlName="token" type="text" 
+                        (ionChange)="addmask()"   minlength="6" maxlength="6">
+                      </ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+
+                <!-- Botones -->
+                <ion-row style="margin-top: 3%;" class="ion-text-right">
+                  <ion-col size="12" size-sm="12" size-md="6" size-lg="6" class="ion-text-center">
+                    <ion-button (click)="validarToken()" color="mango" 
+                      shape="round" size="default" class="botones" [disabled]="!registerFormulario.valid"
+                      onkeypress="validarToken()">
+                      {{'mobile.generics.ValidarToken' | translate }}
+                    </ion-button>
+                  </ion-col>
+
+                  <ion-col size="12" size-sm="12" size-md="6" size-lg="6" class="ion-text-center">
+                    <ion-button type="submit" color="medium" shape="round" size="default" 
+                      class="botones" (click)="ReenviarToken(false)" onkeypress="ReenviarToken(false)">
+                      {{'mobile.generics.ReenviarToken' | translate }}
+                  </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </form>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

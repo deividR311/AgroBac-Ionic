@@ -1,0 +1,7 @@
+{
+  "name": "ControlDeInversion",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

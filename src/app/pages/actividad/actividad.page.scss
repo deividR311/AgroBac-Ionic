@@ -1,0 +1,77 @@
+.contenedor-principal {
+    background-color: #5C4738;
+    margin: 0;
+    padding: 5pt;
+    background-size: cover;
+    min-height: 100%;
+}
+.image-response {
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+}
+.ion-text-wrap{
+    margin-bottom: 15px;
+}
+.group {
+    padding-top: 15pt;
+    text-align: center;
+    border-bottom: 1pt solid #0098d8;
+    color: #0098d8;
+    width: 100%;
+}
+.fondo-azul {
+    padding: 10pt;
+    background-color: #ffffff;
+    background-size: cover;
+    border-radius: 10pt;
+    margin: 0 auto;
+}
+.espacio-blanco {
+    height: 10pt;
+}
+
+.vinculo-texto {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Botones Centrados */
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 30pt;
+    text-align: center;
+}
+.flex-item-left {
+    flex: 50%;
+}
+.flex-item-right {
+    flex: 50%;
+}
+
+.sc-ion-alert-md {
+    white-space: normal !important; 
+}
+
+p {
+    font-weight: 700;
+}
+
+@media screen and (max-width: 425px) {
+    ion-title, ion-card-title {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 1420) and (min-width: 426px) {
+    ion-title, ion-card-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media screen and (max-width: 4096) and (min-width: 1421px) {
+    ion-title, ion-card-title {
+        font-size: 2.5rem;
+    }
+}

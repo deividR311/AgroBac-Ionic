@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{'mobile.generics.Aplication' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-card id="dataTreatment">
+  <ion-card-header>
+    <ion-card-subtitle>{{'mobile.generics.DataTreatment' | translate }}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content style="text-align: justify;">
+    <div [innerHTML]="documentoTratamientoDatos"></div>
+  </ion-card-content>
+  <ion-item>
+    <ion-button fill="outline" slot="start" (click)="acceptDataTreament()" 
+    onkeypress="acceptDataTreament()">{{'mobile.generics.Aceptar' | translate}}</ion-button>
+    <ion-button fill="outline" slot="end" (click)="closeModalDataTermsConditions()"
+    onkeypress="closeModalDataTermsConditions()">
+      {{'mobile.generics.Close' | translate }}</ion-button>
+  </ion-item>
+</ion-card>
+</ion-content>

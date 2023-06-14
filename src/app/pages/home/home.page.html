@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Prueba de concepto
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{'mobile.generics.Geolocation'| translate}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <br>
+  <ion-text>La latitud es: {{latitud}} </ion-text>
+  <br>
+  <br>
+  <ion-text>La longitud es: {{longitud}} </ion-text>
+  <br>
+  <ion-button (click)="PhotoOrGallery(true)" onkeypress="PhotoOrGallery(true)">
+    <ion-icon name="camera"></ion-icon>
+  </ion-button>
+  <ion-button (click)="PhotoOrGallery(false)" onkeypress="PhotoOrGallery(false)">
+    <ion-icon name="folder-outline"></ion-icon>
+  </ion-button>
+  <ion-button (click)="obtenerLocalizacion()" onkeypress="obtenerLocalizacion()">
+    <ion-icon name="navigate-outline"></ion-icon>
+  </ion-button>
+  <br>
+  <ion-row style="margin-top: 3%;">
+    <ion-col size="12" size-sm="12" size-md="12" size-lg="12">
+      <ion-label position="stacked" color="danger" *ngIf="sinPermisos">
+        {{'mobile.generics.WithoutPermits' | translate }}</ion-label>
+    </ion-col>
+  </ion-row>
+
+
+  <ion-card *ngFor="let imagen of arreglo" >
+    <img src="../../../assets/img/imagExif.jpg" height="5%" width="5%" alt="Imagen prueba"/>
+    <ion-button (click)="imagenMetodo(imagen)" onKeyDown="imagenMetodo(imagen)">evaluar tamaño imagen</ion-button>
+  </ion-card>
+  <p>
+    <ion-button (click)="getMetadataSupport()" onKeyDown="getMetadataSupport()">
+      getMetadataSupport
+    </ion-button>
+  </p>
+
+  Multiples fotos 2
+  <ion-col (click)="getImages()" onkeypress="getImages()" multiple="multiple">cargar varias imagenes</ion-col>
+  <div class="images">
+    <div class="one-image" *ngFor="let img of imageResponse">
+      <img src="{{img}}" alt="" srcset="" height="20px" width="20px">
+    </div>
+  </div>
+</ion-content>

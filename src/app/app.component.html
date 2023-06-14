@@ -1,0 +1,32 @@
+<ion-app>
+  <div *ngIf="!ishide">
+    <ion-menu side="start" menuId="first" contentId="content1" auto-hide="true">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>
+            Apperos
+          </ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-item *ngFor="let menu of Menu">
+            <ion-label (click)="opcionMenu(menu.url)" onkeypress="opcionMenu(menu.url)">
+              {{menu.nombre}}</ion-label>
+            <ion-icon name="arrow-forward-circle"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <div id="first">
+      <ion-header>
+        <ion-toolbar color="gradientmenu">
+          <ion-buttons slot="start" type="overlay" color="white">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+    </div>
+  </div>  
+  <ion-router-outlet (activate)="componentAdded($event)" id="content1"></ion-router-outlet>
+</ion-app>

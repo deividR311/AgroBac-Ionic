@@ -1,0 +1,31 @@
+
+
+@media screen and (max-width: 425px) {
+    ion-title,
+    ion-card-title {
+        font-size: 0.8rem;
+    }
+    ion-icon {
+        font-size: 25px;
+    }
+}
+
+@media screen and (max-width: 1440) and (min-width: 426px) {
+    ion-title,
+    ion-card-title {
+        font-size: 1.2rem;
+    }
+    ion-icon {
+        font-size: 30px;
+    }
+}
+
+@media screen and (max-width: 4096) and (min-width: 1441px) {
+    ion-title,
+    ion-card-title {
+        font-size: 2rem;
+    }
+    ion-icon {
+        font-size: 50px;
+    }
+}

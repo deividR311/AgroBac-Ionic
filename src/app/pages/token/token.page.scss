@@ -1,0 +1,36 @@
+.contenedor-principal {
+    background-color: #5C4738;
+    margin: 0;
+    padding: 5pt;
+    background-size: cover;
+    height: 100vh;
+    min-height: 610pt;
+}
+.image-response {
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+}
+.letra {
+    font-size: 18px;
+    color: #0098d8;
+}
+.fondo-azul {
+    padding: 10pt;
+    background-color: #ffffff;
+    background-size: cover;
+    border-radius: 10pt;
+    margin: 0 auto;
+}
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 30pt;
+    text-align: center;
+}
+.flex-item-left {
+    flex: 50%;
+}
+.flex-item-right {
+    flex: 50%;
+}
